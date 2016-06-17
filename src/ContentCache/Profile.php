@@ -35,7 +35,7 @@ class Profile
         return $this->filters = (array) $filters;
     }
 
-    public function getFilters($filters)
+    public function getFilters()
     {
         return $this->filters;
     }
