@@ -1,0 +1,9 @@
+build/
+composer.phar
+composer.lock
+docs/
+vendor/
+tags
+cscope.out
+.DS_Store
+.idea
