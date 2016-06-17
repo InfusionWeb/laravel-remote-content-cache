@@ -64,7 +64,7 @@ Add the command to your `app/Console/Kernel.php`:
 ```php
 protected $commands = [
     //
-    InfusionWeb\Laravel\ContentCache\ContentCacheCommand::class,
+    \InfusionWeb\Laravel\ContentCache\ContentCacheCommand::class,
 ];
 ```
 
