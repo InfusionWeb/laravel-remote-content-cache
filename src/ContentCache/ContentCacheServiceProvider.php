@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ContentCacheServiceProvider extends ServiceProvider
 {
+
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -47,4 +48,17 @@ class ContentCacheServiceProvider extends ServiceProvider
     {
         return array('contentcache', 'InfusionWeb\Laravel\ContentCache\ContentCache');
     }
+
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__.'/../config/contentcache.php' => config_path('contentcache.php'),
+        ]);
+    }
+
 }
