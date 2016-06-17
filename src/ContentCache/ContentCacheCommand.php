@@ -31,8 +31,13 @@ class ContentCacheCommand extends Command
         $profile = $this->argument('profile');
 
         if ($profile == 'all') {
-            // Get the names of all profiles, excluding "default".
-            $profile = array_except(array_keys(config('contentcache')), ['default']);
+            // Get the names of all profiles.
+            $profile = array_keys(config('contentcache'));
+
+            // Remove the "default" profile.
+            if (($key = array_search('default', $profile)) !== false) {
+                unset($profile[$key]);
+            }
         }
 
         foreach ((array) $profile as $name) {
