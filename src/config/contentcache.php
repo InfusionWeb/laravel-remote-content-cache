@@ -27,7 +27,10 @@ return [
         'endpoint' => 'https://podcasts.example.com/api/v1/content/podcasts',
         'query' => ['_format' => 'json'],
 
-        // Perform data filter (value) on given field name (key).
+        // Perform data filter (value) on given field name (key). So in this
+        // case, "id" and "episode" will be cast as integers, and "date_created"
+        // and "date_changed" will be cast as Carbon date objects. All other
+        // values will be cast as strings.
         'filters' => [
             'id' => 'int',
             'date_created' => 'date',
@@ -36,6 +39,9 @@ return [
         ],
 
         // New fields to be created on cached content object from given field names.
+        // E.g. Given an "episode" value of 13 and a "title" of "Lucky 13", the
+        // new "slug" attribute (useful for use in routes) will have a value of
+        // "13-lucky-13".
         'fields' => [
             'slug' => ['episode', 'title'],
         ],
