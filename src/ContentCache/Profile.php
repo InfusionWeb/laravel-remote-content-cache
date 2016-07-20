@@ -53,7 +53,14 @@ class Profile
                     $method = 'filter'.ucfirst($filters[$name]);
 
                     if (method_exists($this, $method)) {
-                        $item->$name = $this->$method($item->$name);
+                        // Deal with arrays correctly.
+                        if (is_array($item->$name)) {
+                            foreach ($item->$name as &$val) {
+                                $val = $this->$method($val);
+                            }
+                        } else {
+                            $item->$name = $this->$method($item->$name);
+                        }
                     }
                 }
             }
