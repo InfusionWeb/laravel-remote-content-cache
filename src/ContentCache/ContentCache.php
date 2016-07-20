@@ -62,12 +62,12 @@ class ContentCache
 
         $items = $this->getContent($name);
 
-        $minutes = config("content.cache.{$name}.minutes", 60);
+        $minutes = config("contentcache.{$name}.minutes", config('contentcache.default.minutes', 60));
 
         Cache::put("{$name}:count", count($items), $minutes);
         Cache::put("{$name}:all", $items, $minutes);
 
-        $keys = config("content.cache.{$name}.keys", ['slug']);
+        $keys = config("contentcache.{$name}.keys", ['id']);
 
         // Cache each content item, keyed by each key listed in configuration.
         foreach ($items as $item) {
