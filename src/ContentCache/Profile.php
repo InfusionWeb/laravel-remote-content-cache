@@ -3,6 +3,8 @@
 namespace InfusionWeb\Laravel\ContentCache;
 
 use Carbon\Carbon;
+use Guzzle;
+use Storage;
 
 class Profile
 {
@@ -48,6 +50,9 @@ class Profile
             // Iterate through each attribute of the result item object.
             foreach (get_object_vars($item) as $name => $value) {
                 // If we have a filter for this attribute...
+                $args = explode(':', $name);
+                $name = array_shift($args);
+
                 if (array_key_exists($name, $filters)) {
                     // Run the filter
                     $method = 'filter'.ucfirst($filters[$name]);
@@ -56,10 +61,10 @@ class Profile
                         // Deal with arrays correctly.
                         if (is_array($item->$name)) {
                             foreach ($item->$name as &$val) {
-                                $val = $this->$method($val);
+                                $val = $this->$method($val, $args);
                             }
                         } else {
-                            $item->$name = $this->$method($item->$name);
+                            $item->$name = $this->$method($item->$name, $args);
                         }
                     }
                 }
@@ -67,19 +72,85 @@ class Profile
         }
     }
 
-    protected function filterString($value)
+    protected function filterString($value, $args = [])
     {
         return (string) $value;
     }
 
-    protected function filterInt($value)
+    protected function filterInt($value, $args = [])
     {
         return (int) $value;
     }
 
-    protected function filterDate($value)
+    protected function filterDate($value, $args = [])
     {
         return Carbon::parse($value);
+    }
+
+    protected function filterFile($value, $args = [])
+    {
+        try {
+            $file_contents = Guzzle::get($value)->getBody()->__toString();
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            // Guzzle couldn't get the original file.
+            return false;
+        }
+
+        $disk = Storage::disk(config('contentcache.default.filesystem'));
+
+        $path = config('contentcache.default.path');
+
+        $filename = basename(parse_url($value, PHP_URL_PATH));
+
+        $location = $path ? $path.'/'.$filename : $filename;
+
+        // Figure out if the file has changed before writing it.
+        $need_to_save = (strlen($file_contents) != $disk->size($location));
+
+        if ($need_to_save) {
+            $was_saved = $disk->put($location, $file_contents);
+        }
+
+        // Return the correct image URL.
+        if (!$need_to_save || $was_saved) {
+            $domain = config('contentcache.default.domain');
+
+            if ($domain) {
+                return config('contentcache.default.schema').'://'.$domain.'/'.$location;
+            }
+            else {
+                return $disk->url($location);
+            }
+        }
+
+        return false;
+    }
+
+    filterImage($value, $args = [])
+    {
+        $style = array_shift($args);
+
+        $image_url = $this->filterFile($value);
+
+        if (!$style) {
+            // Didn't request modification.
+            return $image_url;
+        }
+
+        $valid_types = [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG];
+
+        $image_type = @exif_imagetype($image_url);
+
+        if (!in_array($image_type, $valid_types)) {
+            // Not a valid image. Don't modify.
+            return $image_url;
+        }
+
+        // Modify the image, based on style definition in config.
+        #TODO
+
+        return $image_url;
     }
 
     public function setEndpoint($endpoint)

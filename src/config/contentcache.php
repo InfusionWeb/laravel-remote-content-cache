@@ -11,6 +11,33 @@ return [
         // Length of time (in minutes) to cache content.
         'minutes' => 60,
 
+        // Where to store imported files (defined in "config/filesystems.php").
+        'filesystem' => 's3',
+
+        // Path within filesystem in which to store files.
+        'path' => 'contentcache',
+
+        // Domain to use in URL (optional). If not supplied, default will be used.
+        'domain' => 'files.example.com',
+
+        // Default schema for URL (optional).
+        'schema' => 'https',
+
+        // Style definition for caching alternate versions of images.
+        'image_style' => [
+
+            'full_width' => [
+                'width' => 1400,
+                'height' => 800,
+            ],
+
+            'thumbnail' => [
+                'width' => 200,
+                'height' => 200,
+            ],
+
+        ],
+        
     ],
 
      /*
