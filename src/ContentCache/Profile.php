@@ -117,7 +117,7 @@ class Profile
             $domain = config('contentcache.default.domain');
 
             if ($domain) {
-                return config('contentcache.default.schema').'://'.$domain.'/'.$location;
+                return config('contentcache.default.schema', 'http').'://'.$domain.'/'.$location;
             }
             else {
                 return $disk->url($location);
