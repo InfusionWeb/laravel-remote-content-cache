@@ -2,6 +2,7 @@
 
 namespace InfusionWeb\Laravel\ContentCache;
 
+use Guzzle;
 use Cache;
 
 class ContentCache
@@ -39,19 +40,24 @@ class ContentCache
     {
         $profile = $this->getProfile($name);
 
-        $client = \Kozz\Laravel\Facades\Guzzle::getFacadeRoot();
+        $response = Guzzle::get( $profile->getEndpoint(), ['query' => $profile->getQuery()] );
 
-        $response = $client->get( $profile->getEndpoint(), ['query' => $profile->getQuery()] );
-
-        $results = json_decode($response->getBody());
+        $collection = collect(json_decode($response->getBody()))
+            ->keyBy('id')
+            ->transform(function ($item, $key) {
+                return new Item($item);
+            });
 
         // Run profile filters on results.
-        $profile->filter($results);
+        $profile->filter($collection);
 
         // Create derivitive fields on result objects.
-        $profile->field($results);
+        $profile->field($collection);
 
-        return $results;
+        // Create image derivatives on result objects.
+        $profile->createImageDerivatives($collection);
+
+        return $collection;
     }
 
     public function cache($name = '')
@@ -60,19 +66,22 @@ class ContentCache
             $name = $this->current_profile;
         }
 
-        $items = $this->getContent($name);
+        $collection = $this->getContent($name);
 
         $minutes = config("contentcache.{$name}.minutes", config('contentcache.default.minutes', 60));
 
-        Cache::put("{$name}:count", count($items), $minutes);
-        Cache::put("{$name}:all", $items, $minutes);
+        Cache::put("{$name}:count", count($collection->all()), $minutes);
+        Cache::put("{$name}:all", $collection->all(), $minutes);
 
-        $keys = config("contentcache.{$name}.keys", ['id']);
+        $keys = collect(config("contentcache.{$name}.keys", ['id']));
 
         // Cache each content item, keyed by each key listed in configuration.
-        foreach ($items as $item) {
-            foreach ((array) $keys as $key) {
-                if (property_exists($item, $key)) {
+        foreach ($collection->all() as $item) {
+            // Check each key listed...
+            foreach ($keys->all() as $key) {
+                // If the item has an attribute with the same name as the key,
+                // cache it, indexed by that key.
+                if ($item->hasAttribute($key)) {
                     Cache::put("{$name}:{$key}:{$item->$key}", $item, $minutes);
                 }
             }

@@ -37,7 +37,7 @@ return [
             ],
 
         ],
-        
+
     ],
 
      /*
@@ -73,6 +73,15 @@ return [
             'slug' => ['episode', 'title'],
         ],
 
+        // Image derivatives of given style (see default "image_style" above)
+        // will be created and added to cached content object.
+        'image_derivatives' => [
+            'image_url' => [
+                'full_width',
+                'thumbnail',
+            ],
+        ],
+
         // Keys by which the cache should be indexed. I.e. each content
         // object will be cached under each of these index keys.
         'keys' => [
@@ -81,8 +90,8 @@ return [
             'uuid',
             'episode',
         ],
-        */
 
     ],
+    */
 
 ];
