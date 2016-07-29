@@ -68,9 +68,15 @@ class Profile
                 if (method_exists($this, $method)) {
                     // Deal with array values correctly.
                     if (is_array($item->$field)) {
-                        foreach ($item->$field as &$value) {
-                            $value = $this->$method($value);
+                        // We have to deal with the attribute indirectly
+                        // because it is an overloaded property.
+                        $item_field = [];
+
+                        foreach ($item->$field as $value) {
+                            $item_field[] = $this->$method($value);
                         }
+
+                        $item->$field = $item_field;
                     } else {
                         $item->$field = $this->$method($item->$field);
                     }
@@ -243,6 +249,8 @@ class Profile
                 foreach ($styles->all() as $style) {
                     // Create image derivative and add it to $item.
                     if ($new_image = $this->generateImageDerivative($item->$field, $style)) {
+                        // We have to deal with the attribute indirectly
+                        // because it is an overloaded property.
                         if ($item->hasAttribute('image_derivatives')) {
                             $item_image_derivatives = (array) $item->image_derivatives;
                         } else {
