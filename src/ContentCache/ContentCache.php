@@ -39,11 +39,13 @@ class ContentCache
     protected function getContent($name = '')
     {
         $profile = $this->getProfile($name);
+        $keys = (array) $profile->getKeys();
+        $key_by = reset($keys);
 
         $response = Guzzle::get( $profile->getEndpoint(), ['query' => $profile->getQuery()] );
 
         $collection = collect(json_decode($response->getBody()))
-            ->keyBy('id')
+            ->keyBy($key_by)
             ->transform(function ($item, $key) {
                 return new Item($item);
             });
