@@ -111,6 +111,10 @@ class Profile
             // Guzzle couldn't get the original file.
             return false;
         }
+        catch (\GuzzleHttp\Exception\ConnectException $e) {
+            // Guzzle couldn't get the original file.
+            return false;
+        }
 
         $disk = Storage::disk(config('contentcache.default.filesystem'));
 
