@@ -11,6 +11,13 @@ class Item
     public function __construct($item)
     {
         $this->item = $item;
+
+        // Compensate for Drupal Services Views module's stupidity.
+        foreach ($this->attributeKeys() as $attribute) {
+            if (is_string($this->item->$attribute)) {
+                $this->item->$attribute = html_entity_decode($this->item->$attribute);
+            }
+        }
     }
 
     public function __get($name)
