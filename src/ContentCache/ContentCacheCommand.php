@@ -4,8 +4,6 @@ namespace InfusionWeb\Laravel\ContentCache;
 
 use Illuminate\Console\Command;
 
-use ContentCache;
-
 class ContentCacheCommand extends Command
 {
     /**
@@ -28,7 +26,7 @@ class ContentCacheCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(ContentCache $contentcache)
     {
         $profile = $this->argument('profile');
 
@@ -43,7 +41,7 @@ class ContentCacheCommand extends Command
         }
 
         foreach ((array) $profile as $name) {
-            ContentCache::profile($name)->cache();
+            $contentcache->profile($name)->cache();
 
             $this->info("Remote content items cached from {$name} profile!");
         }
