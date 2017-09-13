@@ -34,6 +34,22 @@ class Item
         return $this->item->$name = $value;
     }
 
+    public function __isset($name)
+    {
+        if ($this->hasAttribute($name)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function __unset($name)
+    {
+        if ($this->hasAttribute($name)) {
+            unset($this->item->$name);
+        }
+    }
+
     public function attributes()
     {
         return get_object_vars($this->item);
