@@ -44,7 +44,12 @@ class ContentCache
 
         $response = Guzzle::get( $profile->getEndpoint(), ['query' => $profile->getQuery()] );
 
-        $collection = collect(json_decode($response->getBody()))
+        $result = json_decode($response->getBody());
+        if (is_object($result) && property_exists($result, 'results') && is_array($result->results)) {
+            $result = $result->results;
+        }
+
+        $collection = collect($result)
             ->keyBy($key_by)
             ->transform(function ($item, $key) {
                 return new Item($item);
