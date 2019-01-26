@@ -36,6 +36,41 @@ class ContentCache
         }
     }
 
+    protected function getContentChunk($name = '', $limit = 100, $offset = 0)
+    {
+        $profile = $this->getProfile($name);
+        $keys = (array) $profile->getKeys();
+        $key_by = reset($keys);
+
+        $query = $profile->getQuery();
+        $query['limit'] = $limit;
+        $query['offset'] = $offset;
+
+        $response = Guzzle::get( $profile->getEndpoint(), ['query' => $query] );
+
+        $result = json_decode($response->getBody());
+        if (is_object($result) && property_exists($result, 'results') && is_array($result->results)) {
+            $result = $result->results;
+        }
+
+        $collection = collect($result)
+            ->keyBy($key_by)
+            ->transform(function ($item, $key) {
+                return new Item($item);
+            });
+
+        // Run profile filters on results.
+        $profile->filter($collection);
+
+        // Create derivitive fields on result objects.
+        $profile->field($collection);
+
+        // Create image derivatives on result objects.
+        $profile->createImageDerivatives($collection);
+
+        return $collection;
+    }
+
     protected function getContent($name = '')
     {
         $profile = $this->getProfile($name);
@@ -124,7 +159,9 @@ class ContentCache
             return $items;
         }
 
-        return Cache::get("{$name}:{$key}:{$value}");
+        $cache_key = "{$name}:{$key}:{$value}";
+
+        return Cache::get($cache_key);
     }
 
     public function __call($name, $arguments)
