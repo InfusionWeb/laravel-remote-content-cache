@@ -2,6 +2,7 @@
 
 namespace InfusionWeb\Laravel\ContentCache;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use Guzzle;
@@ -236,7 +237,7 @@ class Profile
     {
         $value = implode(' ', (array) $args);
 
-        return str_slug($value, '-');
+        return Str::slug($value, '-');
     }
 
     public function createImageDerivatives(Collection $collection)
