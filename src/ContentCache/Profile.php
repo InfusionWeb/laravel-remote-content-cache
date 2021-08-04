@@ -100,7 +100,7 @@ class Profile
 
     protected function filterDate($value)
     {
-        return Carbon::parse($value);
+        return Carbon::parse($value, 'UTC');
     }
 
     protected function filterFile($value)
