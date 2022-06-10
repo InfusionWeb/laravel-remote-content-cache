@@ -1,6 +1,6 @@
 {
     "name": "infusionweb/laravel-remote-content-cache",
-    "description": "Provides a Laravel 5 caching framework for content retrieved from remote server(s).",
+    "description": "Provides a Laravel caching package for content retrieved from remote server(s).",
     "keywords": [
         "laravel",
         "remote",
@@ -21,7 +21,7 @@
     "require": {
         "php": ">=5.5.9",
         "ext-gd": "*",
-        "kozz/laravel-guzzle-provider": "^6.0",
+        "kozz/laravel-guzzle-provider": "^7.1",
         "intervention/image": "~2.3"
     },
     "require-dev": {

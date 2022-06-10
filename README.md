@@ -1,7 +1,7 @@
-# Laravel 5 Remote Content Cache
+# Laravel Remote Content Cache
 [![Latest Stable Version](https://poser.pugx.org/infusionweb/laravel-remote-content-cache/v/stable)](https://packagist.org/packages/infusionweb/laravel-remote-content-cache) [![Total Downloads](https://poser.pugx.org/infusionweb/laravel-remote-content-cache/downloads)](https://packagist.org/packages/infusionweb/laravel-remote-content-cache) [![Latest Unstable Version](https://poser.pugx.org/infusionweb/laravel-remote-content-cache/v/unstable)](https://packagist.org/packages/infusionweb/laravel-remote-content-cache) [![License](https://poser.pugx.org/infusionweb/laravel-remote-content-cache/license)](https://packagist.org/packages/infusionweb/laravel-remote-content-cache)
 
-## A Laravel 5 framework for retrieving and caching content from remote servers.
+## A Laravel package for retrieving and caching content from remote servers.
 
 This package provides a convenient way to retrieve content from remote servers and cache it for use in Laravel.
 
@@ -24,7 +24,7 @@ Or add the package to your `composer.json`:
 ```json
 {
     "require": {
-        "infusionweb/laravel-remote-content-cache": "~0.1.0"
+        "infusionweb/laravel-remote-content-cache": "~1.3.0"
     }
 }
 ```
