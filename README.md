@@ -24,7 +24,7 @@ Or add the package to your `composer.json`:
 ```json
 {
     "require": {
-        "infusionweb/laravel-remote-content-cache": "~1.3.0"
+        "infusionweb/laravel-remote-content-cache": "~1.3.1"
     }
 }
 ```

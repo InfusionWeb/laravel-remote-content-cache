@@ -46,7 +46,13 @@ class ContentCache
         $query['limit'] = $limit;
         $query['offset'] = $offset;
 
-        $response = Guzzle::get( $profile->getEndpoint(), ['query' => $query] );
+        $response = Guzzle::get(
+            $profile->getEndpoint(),
+            [
+                'query' => $query,
+                'verify' => false,
+            ],
+        );
 
         $result = json_decode($response->getBody());
         if (is_object($result) && property_exists($result, 'results') && is_array($result->results)) {
